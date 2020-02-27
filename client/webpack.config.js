@@ -28,7 +28,10 @@ plugins.push(new webpack.optimize.CommonsChunkPlugin({ //Plugin do Webpack usado
     filename: 'vendor.bundle.js' //nome do arquivo que conterá esse novo pedaço
 }));
 
+let SERVICE_URL = JSON.stringify('http://localhost:3000');
+
 if(process.env.NODE_ENV == 'production'){//process é um variável do NodeJS que dá acesso a todos os processos em execução e env é um método que dá acesso a todas as variável de ambiente em utilização
+    SERVICE_URL = JSON.stringify('http://endereco-da-sua-api');
     plugins.push(new webpack.optimize.ModuleConcatenationPlugin()); //Ativa que Scope Hoisting que faz com que todos o wrappers (funções) do projeto sejam concatenados aumetnado a performance no navegador
     plugins.push(new babiliPlugin());
     plugins.push(new optimizeCssAssetsPlugin({
@@ -41,6 +44,8 @@ if(process.env.NODE_ENV == 'production'){//process é um variável do NodeJS que
         canPrint: true //Confiura se pode haver impressão de erro quando ocorrer
     }))
 }
+
+plugins.push(new webpack.DefinePlugin({ SERVICE_URL })); //Vai varrer toda a aplicação procurando por SERVICE_URL e trocar pelo conteúdo da variável SERVICE_URL
 
 //webpack é um módulo do nodejs que foi instalado via npm e que precisa receber configurações em um objeto
 module.exports = {

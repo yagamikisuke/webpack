@@ -74,7 +74,7 @@ export class NegociacaoController {
 
         try {
 
-            const { NegociacaoService } = await System.import('../domain/negociacao/NegociacaoService');
+            const { NegociacaoService } = await import('../domain/negociacao/NegociacaoService'); //Carrega o módulo na hora que o método for chamado (lazy loading)
 
             const service = new NegociacaoService();
 
