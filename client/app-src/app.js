@@ -1,5 +1,8 @@
 import { NegociacaoController } from './controllers/NegociacaoController.js';
 import { Negociacao } from './domain/index.js';
+import 'bootstrap/dist/css/bootstrap.css'; //Como não utilizamos o ./ o Webpack por padrão entenderá que é uma dependêcia do node-modules e irá procurar nessa pasta
+import 'bootstrap/dist/css/bootstrap-theme.css';
+import '../css/meucss.css';
 
 const controller = new NegociacaoController();
 const negociacao = new Negociacao(new Date(), 1, 200);
