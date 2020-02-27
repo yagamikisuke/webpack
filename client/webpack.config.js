@@ -3,8 +3,19 @@ const babiliPlugin = require('babili-webpack-plugin');
 const extractTextPlugin = require('extract-text-webpack-plugin');
 const optimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const webpack = require('webpack');
+const htmlWebpackPlugin = require('html-webpack-plugin');
 
 let plugins = [];
+plugins.push(new htmlWebpackPlugin({
+    hash: true, //gera uma hash que ajuda a invalidar o cache do navegador
+    minify: {
+        html5: true, //diz que a minificação deve partir de um HTML na versão 5
+        collapseWhitespace: true, //retira os espaços em branco
+        removeComments: true //remove os comentários
+    },
+    filename: 'index.html', //o arquivo será disponibilizado na pasta dist
+    template: __dirname + '/main.html' //template usado como base para construir o arquivo acima
+}));
 plugins.push(new extractTextPlugin('styles.css'));
 plugins.push(
     new webpack.ProvidePlugin({
@@ -12,8 +23,13 @@ plugins.push(
         'jQuery' : 'jquery/dist/jquery.js'  
     })
 );
+plugins.push(new webpack.optimize.CommonsChunkPlugin({ //Plugin do Webpack usado para criar pedaços do bundle do projeto
+    name: 'vendor', //nome do novo pedaço
+    filename: 'vendor.bundle.js' //nome do arquivo que conterá esse novo pedaço
+}));
 
 if(process.env.NODE_ENV == 'production'){//process é um variável do NodeJS que dá acesso a todos os processos em execução e env é um método que dá acesso a todas as variável de ambiente em utilização
+    plugins.push(new webpack.optimize.ModuleConcatenationPlugin()); //Ativa que Scope Hoisting que faz com que todos o wrappers (funções) do projeto sejam concatenados aumetnado a performance no navegador
     plugins.push(new babiliPlugin());
     plugins.push(new optimizeCssAssetsPlugin({
         cssProcessor: require('cssnano'), //requisita como processador de CSS o CssNano que fará o processo de minificação
@@ -28,11 +44,14 @@ if(process.env.NODE_ENV == 'production'){//process é um variável do NodeJS que
 
 //webpack é um módulo do nodejs que foi instalado via npm e que precisa receber configurações em um objeto
 module.exports = {
-    entry: './app-src/app.js', // entry recebe como parametro o primeiro módulo a ser carregado
+    entry: {
+        app: './app-src/app.js', // entry recebe como parametro o primeiro módulo a ser carregado
+        vendor: ['jquery', 'bootstrap', 'reflect-metadata'] //novo ponto de partida que gerará o novo bundle com as bibliotecas passadas dentro do array OBS: o nome da chave deve ser o mesmo dado para o ChunkPluing
+    },
     output: { //é o resultado do bundle que o webpack fará com a sequência de carregamento de módulos e precisa ser configurado
         filename: 'bundle.js', //o nome que o arquivo com as configs para carregamento receberá
         path: path.resolve(__dirname, 'dist'), //o caminho onde deve ser gravado esse arquivo. No caso foi usdo o path do NodeJs com a variáve __dirname que pega o diretório atual no primeiro paramtro e concatena com a string passada no segundo
-        publicPath: 'dist' //Caminho público acessível para qualquer requisição onde o Bundle será gerado
+        //publicPath: 'dist' //Caminho público acessível para qualquer requisição onde o Bundle será gerado (quando o index está fora da pasta onde está o bundle)
     },
     module: {
         rules: [
