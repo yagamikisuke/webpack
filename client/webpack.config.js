@@ -12,7 +12,8 @@ module.exports = {
     entry: './app-src/app.js', // entry recebe como parametro o primeiro módulo a ser carregado
     output: { //é o resultado do bundle que o webpack fará com a sequência de carregamento de módulos e precisa ser configurado
         filename: 'bundle.js', //o nome que o arquivo com as configs para carregamento receberá
-        path: path.resolve(__dirname, 'dist') //o caminho onde deve ser gravado esse arquivo. No caso foi usdo o path do NodeJs com a variáve __dirname que pega o diretório atual no primeiro paramtro e concatena com a string passada no segundo
+        path: path.resolve(__dirname, 'dist'), //o caminho onde deve ser gravado esse arquivo. No caso foi usdo o path do NodeJs com a variáve __dirname que pega o diretório atual no primeiro paramtro e concatena com a string passada no segundo
+        publicPath: 'dist' //Caminho público acessível para qualquer requisição onde o Bundle será gerado
     },
     module: {
         rules: [
