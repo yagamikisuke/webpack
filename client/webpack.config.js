@@ -2,9 +2,16 @@ const path = require('path');
 const babiliPlugin = require('babili-webpack-plugin');
 const extractTextPlugin = require('extract-text-webpack-plugin');
 const optimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require('webpack');
 
 let plugins = [];
 plugins.push(new extractTextPlugin('styles.css'));
+plugins.push(
+    new webpack.ProvidePlugin({
+        '$' : 'jquery/dist/jquery.js', //O webpack Pulgin Provider recebe como parametros variáveis que devem ficar acessíveis para outros módulos e seus locais de definição
+        'jQuery' : 'jquery/dist/jquery.js'  
+    })
+);
 
 if(process.env.NODE_ENV == 'production'){//process é um variável do NodeJS que dá acesso a todos os processos em execução e env é um método que dá acesso a todas as variável de ambiente em utilização
     plugins.push(new babiliPlugin());
